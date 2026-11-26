@@ -18,16 +18,13 @@
 <style>
   body.portada { min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
   .portada .escena { position: relative; flex: 1; display: grid; align-content: center; gap: clamp(20px, 3vw, 56px); padding: clamp(24px, 4vw, 80px) clamp(16px, 6vw, 120px); overflow: hidden; }
-  /* accent a 55,75° a sangre, como en las piezas de la marca */
-  .portada .escena::before, .portada .escena::after { content: ""; position: absolute; top: -10%; bottom: -10%; background: var(--rojo); transform: skewX(-34.25deg); pointer-events: none; }
-  .portada .escena::before { right: 14%; width: clamp(14px, 1.6vw, 34px); opacity: .95; animation: entra-acento 1s cubic-bezier(.2,.8,.2,1) both; }
-  .portada .escena::after { right: calc(14% + clamp(30px, 3.4vw, 70px)); width: clamp(4px, .4vw, 9px); opacity: .35; animation: entra-acento 1s .15s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes entra-acento { from { transform: translateY(-110%) skewX(-34.25deg); } }
   .portada .intro { position: relative; z-index: 1; max-width: 62ch; animation: aparecer .7s cubic-bezier(.2,.8,.2,1) both; }
   .portada .logo-grande { height: clamp(44px, 4.6vw, 96px); display: block; margin-bottom: clamp(18px, 2vw, 40px); }
   .portada .logo-grande.osc { display: none; }
   :root[data-tema="oscuro"] .portada .logo-grande.cla { display: none; }
   :root[data-tema="oscuro"] .portada .logo-grande.osc { display: block; }
+  /* Accent con la geometría exacta del logotipo (vector oficial): paralelogramo de 55,75°, medidas del trazo del .ai. */
+  .portada .acento { display: inline-block; height: .95em; aspect-ratio: 132.66 / 97.04; background: var(--rojo); clip-path: polygon(50.05% 0, 100% 0, 49.95% 100%, 0 100%); vertical-align: -.12em; margin-right: .55em; }
   .portada .eyebrow { color: var(--rojo-texto); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: clamp(12px, .9vw, 18px); }
   :root[data-tema="oscuro"] .portada .eyebrow { color: #FF6B63; }
   .portada h1 { margin: .2em 0 .25em; font-size: clamp(32px, 4.2vw, 88px); line-height: 1.02; letter-spacing: -.025em; }
@@ -56,7 +53,6 @@
   .portada .extra a { font-size: clamp(12px, .85vw, 17px); color: var(--tinta-2); border: 1px solid var(--linea-2); border-radius: 999px; padding: .15em .7em; text-decoration: none; position: relative; z-index: 2; }
   .portada .extra a:hover { color: var(--tinta); border-color: var(--tinta-3); }
   .portada footer { padding: 14px clamp(16px, 6vw, 120px); color: var(--tinta-3); font-size: 13px; border-top: 1px solid var(--linea); background: var(--superficie); display: flex; justify-content: space-between; gap: 1em; flex-wrap: wrap; }
-  @media (max-width: 700px) { .portada .escena::before { right: -2%; opacity: .5; } .portada .escena::after { display: none; } }
 </style>
 </head>
 <body class="portada">
@@ -64,7 +60,7 @@
   <div class="intro">
     <img class="logo-grande cla" src="img/logo-proinversion.svg" alt="PROINVERSIÓN">
     <img class="logo-grande osc" src="img/logo-proinversion-blanco.svg" alt="PROINVERSIÓN">
-    <span class="eyebrow">Dirección de Servicios al Inversionista</span>
+    <span class="eyebrow"><span class="acento" aria-hidden="true"></span>Dirección de Servicios al Inversionista</span>
     <h1>Seguimiento del Plan Operativo Institucional</h1>
     <p class="lead">Metas del POI por equipo, con la ejecución mensual reportada y su avance contra la meta anual.</p>
     <span class="dato" id="dato" hidden></span>

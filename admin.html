@@ -11,7 +11,7 @@
 </head>
 <body class="admin">
 <header class="cab">
-  <img class="logo logo-claro" src="img/logo-proinversion.svg" alt="PROINVERSIÓN">
+  <a class="logo-link" href="./" title="Ir a la portada"><img class="logo logo-claro" src="img/logo-proinversion.svg" alt="PROINVERSIÓN · ir a la portada"></a>
   <div class="titulo">
     <h1>Administración · Seguimiento POI</h1>
     <p>Dirección de Servicios al Inversionista</p>
@@ -33,6 +33,7 @@
 
 <div id="app" class="oculto">
   <nav class="nav" id="navAdmin" aria-label="Secciones">
+    <a class="tab volver" href="./">‹ Portada</a><span class="sep" aria-hidden="true"></span>
     <button class="tab" data-sec="inicio" aria-selected="true">Inicio</button>
     <button class="tab" data-sec="actividades">Actividades POI</button>
     <button class="tab" data-sec="equipos">Equipos y responsables</button>
@@ -43,7 +44,6 @@
     <button class="tab" data-sec="ajustes">Ajustes</button>
     <div class="der">
       <select id="selAnioAdmin" class="btn" aria-label="Año que se edita"></select>
-      <a class="btn" href="./" title="Volver a la portada">⌂ Portada</a>
       <a class="btn" href="monitor.html" target="_blank" rel="noopener">Ver monitor ↗</a>
       <button class="btn" id="btnSalir">Salir</button>
     </div>

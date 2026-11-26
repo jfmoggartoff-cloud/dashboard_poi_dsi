@@ -380,7 +380,7 @@
 
   const SECCIONES = { inicio: sInicio, actividades: sActividades, equipos: sEquipos, matrices: sMatrices, conciliacion: sConciliacion, reportes: sReportes, anios: sAnios, ajustes: sAjustes };
   function pintar() {
-    $$('#navAdmin .tab').forEach(b => b.setAttribute('aria-selected', b.dataset.sec === seccion));
+    $$('#navAdmin .tab[data-sec]').forEach(b => b.setAttribute('aria-selected', b.dataset.sec === seccion));
     const y = window.scrollY;
     $('#sec').innerHTML = SECCIONES[seccion]();
     window.scrollTo(0, y);
@@ -463,7 +463,7 @@
 
   document.addEventListener('click', e => {
     const t = e.target;
-    const tab = t.closest('#navAdmin .tab'); if (tab) { seccion = tab.dataset.sec; pintar(); return; }
+    const tab = t.closest('#navAdmin .tab[data-sec]'); if (tab) { seccion = tab.dataset.sec; pintar(); return; }
     const ir = t.closest('[data-ir]'); if (ir) { e.preventDefault(); seccion = ir.dataset.ir; pintar(); return; }
     const acc = t.closest('[data-acc]'); if (acc && ACC[acc.dataset.acc]) { accion(acc.dataset.acc, ACC[acc.dataset.acc]); return; }
     if (t.closest('[data-cerrar]')) { $('#dlg').close(); return; }
