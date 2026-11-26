@@ -1,0 +1,53 @@
+/* Administración: tamaños de escritorio normales (no de TV). */
+body.admin { font-size: 15px; }
+.admin .cab { padding: 12px 24px; }
+.admin .cab .logo { height: 38px; }
+.admin .cab .titulo h1 { font-size: 22px; }
+.admin .cab .titulo p, .admin .cab .corte { font-size: 13px; }
+.admin .cab .corte b { font-size: 15px; }
+.admin .nav { padding: 8px 24px; }
+.admin main { padding: 20px 24px 60px; max-width: 1500px; }
+.admin h2 { font-size: 22px; margin: 0 0 6px; }
+.admin h3 { font-size: 17px; margin: 0 0 8px; }
+.admin .tarjeta { padding: 18px 20px; margin-bottom: 18px; }
+.ayuda { color: var(--tinta-2); margin: 0 0 12px; max-width: 80ch; }
+.login { max-width: 420px; margin: 8vh auto; }
+.login form { display: grid; gap: 12px; }
+label { display: grid; gap: 4px; font-weight: 500; font-size: 14px; }
+input[type=text], input:not([type]), input[type=password], input[type=number], input[type=date], select, textarea {
+  border: 1px solid var(--linea-2); border-radius: 8px; padding: 7px 9px; background: var(--superficie); width: 100%;
+}
+textarea { min-height: 60px; resize: vertical; }
+input:focus, select:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--serie-ejec); outline-offset: 1px; }
+.error { color: var(--mal-tinta); min-height: 1.2em; margin: 0; }
+.fila { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+.fila > * { flex: 1 1 180px; }
+.fila > .fijo { flex: 0 0 auto; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.kpi { background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; padding: 12px 14px; }
+.kpi b { display: block; font-size: 28px; line-height: 1.1; }
+.kpi span { color: var(--tinta-2); font-size: 13px; }
+.lista-avisos { margin: 0; padding-left: 18px; }
+.lista-avisos li { margin: 4px 0; }
+.aviso { margin: 12px 24px 0; padding: 10px 14px; border-radius: 10px; background: var(--alerta-fondo); color: var(--alerta-tinta); border: 1px solid var(--alerta); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.toast { position: fixed; right: 20px; bottom: 20px; background: var(--tinta); color: var(--superficie); padding: 10px 16px; border-radius: 10px; opacity: 0; transform: translateY(8px); transition: .2s; pointer-events: none; max-width: 420px; z-index: 50; }
+.toast.ver { opacity: 1; transform: none; }
+table.tabla.admin-t td, table.tabla.admin-t th { text-align: left; white-space: normal; vertical-align: top; }
+table.tabla.admin-t td.n, table.tabla.admin-t th.n { text-align: right; white-space: nowrap; }
+table.tabla input[type=number] { width: 5.2em; padding: 4px 5px; text-align: right; }
+table.tabla input[type=checkbox] { width: 18px; height: 18px; }
+td.dif { background: var(--alerta-fondo); color: var(--alerta-tinta); font-weight: 700; }
+td.ok { color: var(--ok-tinta); }
+.meses-grid { display: grid; grid-template-columns: 90px repeat(12, minmax(54px, 1fr)); gap: 4px; align-items: center; font-size: 13px; overflow-x: auto; }
+.meses-grid input { width: 100%; padding: 5px 4px; text-align: right; }
+.meses-grid .h { color: var(--tinta-2); text-align: center; font-weight: 500; }
+.acciones { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; background: var(--superficie-2); border: 1px solid var(--linea); font-size: 12px; color: var(--tinta-2); margin: 1px 2px; }
+.pill.calc { border-color: var(--serie-ejec); color: var(--serie-ejec); }
+.drop { border: 2px dashed var(--linea-2); border-radius: 12px; padding: 18px; text-align: center; color: var(--tinta-2); }
+.drop.sobre { border-color: var(--serie-ejec); background: var(--superficie-2); }
+details > summary { cursor: pointer; font-weight: 500; margin: 6px 0; }
+code { background: var(--superficie-2); padding: 1px 5px; border-radius: 4px; font-size: .92em; }
+.meses-grid .dif { background: var(--alerta-fondo); color: var(--alerta-tinta); font-weight: 700; border-radius: 4px; }
+.admin .btn { white-space: nowrap; }

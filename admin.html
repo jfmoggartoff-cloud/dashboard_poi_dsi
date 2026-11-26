@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Administración POI · DSI</title>
+<link rel="stylesheet" href="css/dsi.css">
+<link rel="stylesheet" href="css/admin.css">
+<script>document.documentElement.setAttribute('data-tema', 'claro');</script>
+</head>
+<body class="admin">
+<header class="cab">
+  <img class="logo logo-claro" src="img/logo-proinversion.svg" alt="PROINVERSIÓN">
+  <div class="titulo">
+    <h1>Administración · Seguimiento POI</h1>
+    <p>Dirección de Servicios al Inversionista</p>
+  </div>
+  <div class="corte" id="estadoGuardado"></div>
+</header>
+
+<!-- acceso -->
+<section id="login" class="login tarjeta">
+  <h2>Ingresar</h2>
+  <p class="ayuda">Solo la cuenta administradora puede modificar los datos. Las jefaturas usan el <a href="./">monitor</a>, que es de solo lectura.</p>
+  <form id="formLogin" autocomplete="off">
+    <label>Usuario <input id="lUsuario" required autocomplete="username"></label>
+    <label>Contraseña <input id="lClave" type="password" required autocomplete="current-password"></label>
+    <button class="btn prim" type="submit">Ingresar</button>
+    <p class="error" id="lError" role="alert"></p>
+  </form>
+</section>
+
+<div id="app" class="oculto">
+  <nav class="nav" id="navAdmin" aria-label="Secciones">
+    <button class="tab" data-sec="inicio" aria-selected="true">Inicio</button>
+    <button class="tab" data-sec="actividades">Actividades POI</button>
+    <button class="tab" data-sec="equipos">Equipos y responsables</button>
+    <button class="tab" data-sec="matrices">Matrices</button>
+    <button class="tab" data-sec="conciliacion">Conciliación</button>
+    <button class="tab" data-sec="reportes">Reportes Excel</button>
+    <button class="tab" data-sec="anios">Años POI</button>
+    <button class="tab" data-sec="ajustes">Ajustes</button>
+    <div class="der">
+      <select id="selAnioAdmin" class="btn" aria-label="Año que se edita"></select>
+      <a class="btn" href="./" target="_blank" rel="noopener">Ver monitor ↗</a>
+      <button class="btn" id="btnSalir">Salir</button>
+    </div>
+  </nav>
+  <div id="aviso" class="aviso oculto" role="status"></div>
+  <main id="sec"></main>
+</div>
+
+<dialog class="detalle" id="dlg"><div class="cuerpo" id="dlgCuerpo"></div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/nucleo.js"></script>
+<script src="js/catalogo.js"></script>
+<script src="js/importadores.js"></script>
+<script src="js/exportar.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

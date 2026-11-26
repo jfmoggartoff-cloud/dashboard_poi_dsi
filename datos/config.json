@@ -1,0 +1,21 @@
+{
+  "anios": [
+    2026
+  ],
+  "anioMonitor": 2026,
+  "admin": {
+    "usuario": "admin.dsi",
+    "sal": "afd976a431",
+    "hash": "1d44c7065b86533571e86f2400caefa0ba80ef159e78e540bc5efd326badbbee"
+  },
+  "monitor": {
+    "segundosPorPantalla": 20,
+    "minutosRecarga": 5
+  },
+  "github": {
+    "propietario": "",
+    "repositorio": "",
+    "rama": "main",
+    "carpeta": ""
+  }
+}
