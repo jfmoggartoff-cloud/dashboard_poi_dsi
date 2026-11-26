@@ -186,12 +186,26 @@
     if (!modoTV) pantallas.push({ id: 'resp', nombre: 'Responsables', html: () => pResponsables(null) });
   }
 
+  /* TV: reduce la escala (--k) hasta que ninguna ficha ni bloque se desborde. Se mide con las cifras finales. */
+  function ajustarTV() {
+    const main = $("#main");
+    if (!modoTV) { main.style.removeProperty("--k"); return; }
+    const cajas = () => [main].concat(Array.from(main.querySelectorAll(".tarjeta, .indicadores, .equipos-grid, .resp-grid")));
+    const desborda = () => cajas().some(el => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1);
+    main.classList.add("midiendo");
+    let k = 1;
+    main.style.setProperty("--k", k);
+    while (desborda() && k > 0.55) { k = Math.round((k - 0.03) * 100) / 100; main.style.setProperty("--k", k); }
+    main.classList.remove("midiendo");
+  }
+
   function mostrar(i) {
     actual = (i + pantallas.length) % pantallas.length;
     const p = pantallas[actual];
     const main = $('#main');
     main.innerHTML = p.html();
     main.querySelectorAll('.tarjeta').forEach((t, k) => t.style.setProperty('--d', (k * 70) + 'ms'));
+    ajustarTV();
     animarCifras(main);
     $('#tabs').innerHTML = pantallas.map((x, k) => '<button class="tab" role="tab" aria-selected="' + (k === actual) + '" data-k="' + k + '">' + esc(x.nombre) + '</button>').join('');
     $('#pags').innerHTML = modoTV ? pantallas.map((x, k) => '<span class="' + (k === actual ? 'act' : '') + '"></span>').join('') : '';
@@ -318,6 +332,9 @@
     if (modoTV && e.key === 'Escape') salirTV();
   });
   $('#btnTV').onclick = e => { e.stopPropagation(); entrarTV(); };
+  let timerAjuste = null;
+  window.addEventListener('resize', () => { clearTimeout(timerAjuste); timerAjuste = setTimeout(ajustarTV, 200); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ajustarTV());
   $('#btnTema').onclick = () => {
     const r = document.documentElement;
     r.setAttribute('data-tema', r.getAttribute('data-tema') === 'oscuro' ? 'claro' : 'oscuro');

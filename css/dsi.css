@@ -260,24 +260,17 @@ table.tabla tr.total td { font-weight: 700; }
 main .tarjeta { animation: aparecer .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d, 0ms); }
 .pantalla-titulo { animation: aparecer .5s cubic-bezier(.2,.8,.2,1) both; }
 
-/* Solo en TV: dos líneas finas recorren el borde de cada tarjeta, una (gris) siguiendo a la otra (roja).
-   Nada pasa por encima de los números. Si el navegador no soporta máscaras, no se dibuja nada. */
-@property --giro { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-@keyframes giro { to { --giro: 360deg; } }
-@supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
-  body.tv main .tarjeta { isolation: isolate; }
-  body.tv main .tarjeta::before {
-    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: clamp(2px, .16vw, 4px); pointer-events: none; z-index: -1;
-    background: conic-gradient(from var(--giro),
-      transparent 0deg 200deg,
-      rgba(159,161,162,0) 200deg, rgba(159,161,162,.9) 262deg, transparent 262.5deg 282deg,
-      rgba(225,38,29,0) 282deg, rgba(225,38,29,1) 344deg, transparent 344.5deg);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-    animation: giro 9s linear infinite; animation-delay: calc(var(--d, 0ms) * -12);
-    opacity: .85;
-  }
+/* Solo en TV: una sombra suave aparece detrás de cada ficha y se desvanece, en ola de una ficha a la siguiente.
+   No toca el contenido ni los números. */
+@keyframes sombra {
+  0%, 30%, 100% { box-shadow: var(--sombra); }
+  12% { box-shadow: var(--sombra-alta); }
+}
+:root { --sombra-alta: 0 12px 36px rgba(22,26,29,.16), 0 3px 8px rgba(22,26,29,.08); }
+:root[data-tema="oscuro"] { --sombra-alta: 0 12px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06); }
+body.tv main .tarjeta {
+  animation: aparecer .6s cubic-bezier(.2,.8,.2,1) both, sombra 9s ease-in-out infinite;
+  animation-delay: var(--d, 0ms), calc(1.4s + var(--d, 0ms) * 5);
 }
 body.tv .estado.verde i { animation: latido 2.6s ease-in-out infinite; }
 
@@ -293,3 +286,44 @@ body.tv .estado.verde i { animation: latido 2.6s ease-in-out infinite; }
 .nav .tab.volver { color: var(--tinta-3); padding-left: .6em; }
 .nav .tab.volver:hover { color: var(--tinta); }
 .nav .sep { width: 1px; align-self: stretch; margin: .35em .35em; background: var(--linea-2); }
+
+/* ============================================================
+   TV: tamaños relativos al lado más limitante de la pantalla (ancho o alto),
+   multiplicados por --k, que monitor.js reduce hasta que todas las fichas caben
+   completas (navegadores de TV con barra, escalado de Windows, 720p, etc.).
+   ============================================================ */
+body.tv { --u: min(1vw, 1.7778vh); }
+body.tv main { font-size: calc(var(--u) * var(--k, 1)); padding: 1.3em 2em calc(1.2em + 2.8vw); }
+body.tv .pantalla-titulo { margin-bottom: 1em; gap: .8em; }
+body.tv .pantalla-titulo h2 { font-size: 2.2em; }
+body.tv .pantalla-titulo .sub { font-size: 1.05em; }
+body.tv .pantalla-titulo .estado { font-size: 1em; }
+body.tv .indicadores, body.tv .equipos-grid, body.tv .resumen, body.tv .resp-grid { gap: 1.1em; }
+body.tv .ind { padding: .9em 1.15em; gap: .55em; }
+body.tv .ind .arriba { font-size: .8em; }
+body.tv .ind h3 { font-size: 1.4em; }
+body.tv .ind .ejecutado { font-size: 4.2em; }
+body.tv .ind .pct b { font-size: 2.4em; }
+body.tv .barra-pie { font-size: .8em; }
+body.tv .barra { height: 1em; }
+body.tv .chip { font-size: .72em; }
+body.tv .ind .mensual { flex: 1 1 auto; min-height: 4.6em; height: auto; gap: 0 .25em; }
+body.tv .mensual .m { font-size: max(.72em, 10px); }
+body.tv .tarjeta { padding: 1.1em 1.25em; }
+body.tv .hero .etq { font-size: 1.2em; }
+body.tv .hero .grande { font-size: 8.5em; }
+body.tv .hero .nota { font-size: .9em; }
+body.tv .hero, body.tv .eq-tile { gap: .7em; }
+body.tv .conteo-estados { gap: .7em; }
+body.tv .conteo-estados > div { padding: .7em; }
+body.tv .conteo-estados b { font-size: 3em; }
+body.tv .conteo-estados span { font-size: .85em; }
+body.tv .eq-tile h3 { font-size: 1.6em; }
+body.tv .eq-tile .pct { font-size: 4.8em; }
+body.tv .eq-tile .det { font-size: .9em; }
+body.tv .punto { width: 1.1em; height: 1.1em; }
+body.tv .resp-bloque h3 { font-size: 1.35em; }
+body.tv .resp-bloque .sub { font-size: .8em; margin-bottom: .7em; }
+body.tv .resp-fila { font-size: 1em; padding: .3em 0; gap: .8em; }
+body.tv .hbar { height: .9em; }
+body.tv main.midiendo, body.tv main.midiendo * { animation: none !important; }
