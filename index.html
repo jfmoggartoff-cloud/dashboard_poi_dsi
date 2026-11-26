@@ -7,50 +7,108 @@
 <title>Seguimiento POI · DSI</title>
 <link rel="stylesheet" href="css/dsi.css">
 <script>
-  // tema: ?tema=oscuro|claro, si no, el del sistema
+  // Compatibilidad: enlaces antiguos "index.html?modo=tv" van directo al monitor.
   (function () {
-    var q = new URLSearchParams(location.search).get('tema');
-    var t = q || (matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro');
+    var q = new URLSearchParams(location.search);
+    if (q.get('modo')) location.replace('monitor.html' + location.search + location.hash);
+    var t = q.get('tema') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro');
     document.documentElement.setAttribute('data-tema', t);
   })();
 </script>
+<style>
+  body.portada { min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+  .portada .escena { position: relative; flex: 1; display: grid; align-content: center; gap: clamp(20px, 3vw, 56px); padding: clamp(24px, 4vw, 80px) clamp(16px, 6vw, 120px); overflow: hidden; }
+  /* accent a 55,75° a sangre, como en las piezas de la marca */
+  .portada .escena::before, .portada .escena::after { content: ""; position: absolute; top: -10%; bottom: -10%; background: var(--rojo); transform: skewX(-34.25deg); pointer-events: none; }
+  .portada .escena::before { right: 14%; width: clamp(14px, 1.6vw, 34px); opacity: .95; animation: entra-acento 1s cubic-bezier(.2,.8,.2,1) both; }
+  .portada .escena::after { right: calc(14% + clamp(30px, 3.4vw, 70px)); width: clamp(4px, .4vw, 9px); opacity: .35; animation: entra-acento 1s .15s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes entra-acento { from { transform: translateY(-110%) skewX(-34.25deg); } }
+  .portada .intro { position: relative; z-index: 1; max-width: 62ch; animation: aparecer .7s cubic-bezier(.2,.8,.2,1) both; }
+  .portada .logo-grande { height: clamp(44px, 4.6vw, 96px); display: block; margin-bottom: clamp(18px, 2vw, 40px); }
+  .portada .logo-grande.osc { display: none; }
+  :root[data-tema="oscuro"] .portada .logo-grande.cla { display: none; }
+  :root[data-tema="oscuro"] .portada .logo-grande.osc { display: block; }
+  .portada .eyebrow { color: var(--rojo-texto); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: clamp(12px, .9vw, 18px); }
+  :root[data-tema="oscuro"] .portada .eyebrow { color: #FF6B63; }
+  .portada h1 { margin: .2em 0 .25em; font-size: clamp(32px, 4.2vw, 88px); line-height: 1.02; letter-spacing: -.025em; }
+  .portada .lead { color: var(--tinta-2); font-size: clamp(15px, 1.25vw, 26px); margin: 0; }
+  .portada .dato { display: inline-flex; gap: .6em; align-items: baseline; margin-top: clamp(14px, 1.6vw, 30px); padding: .5em .9em; border-radius: 12px; background: var(--superficie); border: 1px solid var(--linea); font-size: clamp(13px, 1vw, 20px); color: var(--tinta-2); }
+  .portada .dato b { font-size: 1.6em; color: var(--tinta); }
+  .portada .opciones { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(14px, 1.6vw, 32px); max-width: 1400px; }
+  .portada .opcion { animation: aparecer .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d, 0ms); }
+  .portada .opcion { position: relative; display: flex; flex-direction: column; gap: .5em; text-decoration: none; color: inherit; padding: clamp(18px, 1.8vw, 36px); overflow: hidden; transition: transform .25s, box-shadow .25s, border-color .25s; }
+  .portada .opcion:hover, .portada .opcion:focus-visible { transform: translateY(-4px); border-color: var(--linea-2); box-shadow: 0 10px 30px rgba(22,26,29,.12); outline: none; }
+  .portada .opcion::after { content: ""; position: absolute; top: -20%; bottom: -20%; left: 0; width: 25%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent); transform: translateX(-140%) skewX(-34.25deg); transition: transform .8s; pointer-events: none; }
+  :root[data-tema="oscuro"] .portada .opcion::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
+  .portada .opcion:hover::after { transform: translateX(480%) skewX(-34.25deg); }
+  .portada .icono { width: clamp(44px, 3.4vw, 68px); height: clamp(44px, 3.4vw, 68px); border-radius: 14px; display: grid; place-items: center; background: var(--superficie-2); border: 1px solid var(--linea); margin-bottom: .4em; }
+  .portada .icono svg { width: 55%; height: 55%; stroke: var(--tinta); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .portada .opcion.prim .icono { background: var(--rojo-texto); border-color: var(--rojo-texto); }
+  .portada .opcion.prim .icono svg { stroke: #fff; }
+  .portada .opcion h2 { margin: 0; font-size: clamp(20px, 1.7vw, 36px); }
+  .portada .opcion p { margin: 0; color: var(--tinta-2); font-size: clamp(13px, 1vw, 20px); }
+  .portada .opcion .ir { margin-top: auto; padding-top: .8em; font-weight: 700; color: var(--rojo-texto); font-size: clamp(13px, 1vw, 20px); }
+  :root[data-tema="oscuro"] .portada .opcion .ir { color: #FF6B63; }
+  .portada .ir.estirado { text-decoration: none; }
+  .portada .ir.estirado::before { content: ""; position: absolute; inset: 0; z-index: 1; }
+  .portada .opcion:has(.estirado:hover), .portada .opcion:has(.estirado:focus-visible) { transform: translateY(-4px); border-color: var(--linea-2); box-shadow: 0 10px 30px rgba(22,26,29,.12); }
+  .portada .extra { display: flex; gap: .5em; flex-wrap: wrap; margin-top: .3em; }
+  .portada .extra a { font-size: clamp(12px, .85vw, 17px); color: var(--tinta-2); border: 1px solid var(--linea-2); border-radius: 999px; padding: .15em .7em; text-decoration: none; position: relative; z-index: 2; }
+  .portada .extra a:hover { color: var(--tinta); border-color: var(--tinta-3); }
+  .portada footer { padding: 14px clamp(16px, 6vw, 120px); color: var(--tinta-3); font-size: 13px; border-top: 1px solid var(--linea); background: var(--superficie); display: flex; justify-content: space-between; gap: 1em; flex-wrap: wrap; }
+  @media (max-width: 700px) { .portada .escena::before { right: -2%; opacity: .5; } .portada .escena::after { display: none; } }
+</style>
 </head>
-<body>
-<header class="cab">
-  <img class="logo logo-claro" src="img/logo-proinversion.svg" alt="PROINVERSIÓN">
-  <img class="logo logo-oscuro" src="img/logo-proinversion-blanco.svg" alt="PROINVERSIÓN">
-  <div class="titulo">
-    <h1>Dirección de Servicios al Inversionista</h1>
-    <p id="subtitulo">Seguimiento del Plan Operativo Institucional</p>
+<body class="portada">
+<section class="escena">
+  <div class="intro">
+    <img class="logo-grande cla" src="img/logo-proinversion.svg" alt="PROINVERSIÓN">
+    <img class="logo-grande osc" src="img/logo-proinversion-blanco.svg" alt="PROINVERSIÓN">
+    <span class="eyebrow">Dirección de Servicios al Inversionista</span>
+    <h1>Seguimiento del Plan Operativo Institucional</h1>
+    <p class="lead">Metas del POI por equipo, con la ejecución mensual reportada y su avance contra la meta anual.</p>
+    <span class="dato" id="dato" hidden></span>
   </div>
-  <div class="corte" id="corte"></div>
-</header>
 
-<nav class="nav" id="nav" aria-label="Pantallas">
-  <div id="tabs" style="display:contents"></div>
-  <div class="der">
-    <select id="selAnio" class="btn" aria-label="Año del POI"></select>
-    <button class="btn" id="btnTema" title="Cambiar tema claro / oscuro">◐ Tema</button>
-    <button class="btn prim" id="btnTV" title="Pantalla completa con rotación automática">▶ Modo TV</button>
-  </div>
-</nav>
-
-<main id="main"><div class="vacio">Cargando datos…</div></main>
-
-<footer class="pie" id="pie">
-  <span class="leyenda">
-    <span><span class="sw e"></span>Ejecutado</span>
-    <span><span class="sw p"></span>Programado</span>
-    <span><span class="sw m"></span>Programado a la fecha</span>
-  </span>
-  <span>Semáforo contra la meta anual: <b>✓ ≥ 100%</b> · <b>! 80–99%</b> · <b>✕ &lt; 80%</b></span>
-  <span class="pags" id="pags"></span>
+  <nav class="opciones" aria-label="Accesos">
+    <a class="tarjeta opcion prim" href="monitor.html" style="--d:100ms">
+      <span class="icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18"/><path d="M6 16V10"/><path d="M11 16V5"/><path d="M16 16v-8"/><path d="M21 16v-4"/></svg></span>
+      <h2>Ver dashboard</h2>
+      <p>Resumen general, avance de cada equipo y aporte por responsable. Para laptops y celulares.</p>
+      <span class="ir">Abrir dashboard →</span>
+    </a>
+    <div class="tarjeta opcion" style="--d:180ms">
+      <span class="icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg></span>
+      <h2>Modo TV</h2>
+      <p>Pantallas que rotan solas y se actualizan cada pocos minutos. Para los televisores de las jefaturas.</p>
+      <span class="extra"><a href="monitor.html?modo=tv&amp;tema=oscuro">Versión fondo oscuro</a></span>
+      <a class="ir estirado" href="monitor.html?modo=tv">Iniciar modo TV →</a>
+    </div>
+    <a class="tarjeta opcion" href="admin.html" style="--d:260ms">
+      <span class="icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+      <h2>Administración</h2>
+      <p>Carga de matrices, programación y ejecución del POI, equipos, reportes en Excel y publicación.</p>
+      <span class="ir">Ingresar →</span>
+    </a>
+  </nav>
+</section>
+<footer>
+  <span>PROINVERSIÓN · Dirección de Servicios al Inversionista</span>
+  <span>Uso interno</span>
 </footer>
-<div class="progreso-rot" id="progresoRot"></div>
-
-<dialog class="detalle" id="detalle"><div class="cuerpo" id="detalleCuerpo"></div></dialog>
-
 <script src="js/nucleo.js"></script>
-<script src="js/monitor.js"></script>
+<script>
+  (async function () {
+    try {
+      const D = window.DSI;
+      const cfg = await D.cargarConfig();
+      const datos = await D.cargarAnio(cfg.anioMonitor || cfg.anios[cfg.anios.length - 1]);
+      const g = D.resumenGeneral(datos);
+      const el = document.getElementById('dato');
+      el.innerHTML = 'POI ' + datos.anio + ' · avance promedio <b class="num">' + D.fmtPct(g.avance) + '</b> · ejecución a ' + D.MESES[(datos.corte || 12) - 1].toLowerCase();
+      el.hidden = false;
+    } catch (e) { /* la portada funciona sin datos */ }
+  })();
+</script>
 </body>
 </html>

@@ -22,7 +22,7 @@
 <!-- acceso -->
 <section id="login" class="login tarjeta">
   <h2>Ingresar</h2>
-  <p class="ayuda">Solo la cuenta administradora puede modificar los datos. Las jefaturas usan el <a href="./">monitor</a>, que es de solo lectura.</p>
+  <p class="ayuda">Solo la cuenta administradora puede modificar los datos. Las jefaturas usan el <a href="monitor.html">monitor</a>, que es de solo lectura.</p>
   <form id="formLogin" autocomplete="off">
     <label>Usuario <input id="lUsuario" required autocomplete="username"></label>
     <label>Contraseña <input id="lClave" type="password" required autocomplete="current-password"></label>
@@ -43,7 +43,8 @@
     <button class="tab" data-sec="ajustes">Ajustes</button>
     <div class="der">
       <select id="selAnioAdmin" class="btn" aria-label="Año que se edita"></select>
-      <a class="btn" href="./" target="_blank" rel="noopener">Ver monitor ↗</a>
+      <a class="btn" href="./" title="Volver a la portada">⌂ Portada</a>
+      <a class="btn" href="monitor.html" target="_blank" rel="noopener">Ver monitor ↗</a>
       <button class="btn" id="btnSalir">Salir</button>
     </div>
   </nav>

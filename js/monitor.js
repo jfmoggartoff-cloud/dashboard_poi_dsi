@@ -1,6 +1,6 @@
 /* ============================================================
    Monitor de solo lectura (jefaturas): laptop (pestañas) y TV (rotación).
-   URL: index.html?modo=tv&tema=oscuro&anio=2026&seg=20
+   URL: monitor.html?modo=tv&tema=oscuro&anio=2026&seg=20
    ============================================================ */
 (function () {
   'use strict';
@@ -13,6 +13,32 @@
   let modoTV = q.get('modo') === 'tv';
   let filtroResp = '';
 
+  /* ---------- números animados ----------
+     cnt() deja el valor final escrito (sirve sin animación) y lo marca para contar desde 0. */
+  function cnt(v, dec, suf) {
+    if (v == null || isNaN(v)) return '—';
+    return '<span class="cuenta" data-v="' + v + '" data-d="' + (dec || 0) + '" data-s="' + esc(suf || '') + '">' + D.fmt(v, dec || 0) + esc(suf || '') + '</span>';
+  }
+  function cntPct(r) { return r == null || isNaN(r) ? '—' : cnt(Math.round(r * 100), 0, '%'); }
+  const sinMovimiento = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animarCifras(raiz) {
+    if (sinMovimiento()) return;
+    const els = Array.from(raiz.querySelectorAll('.cuenta'));
+    if (!els.length) return;
+    const t0 = performance.now(), dur = 1300;
+    els.forEach((el, k) => { el._ret = Math.min(k * 35, 500); el._fin = el.textContent; el.textContent = D.fmt(0, +el.dataset.d) + el.dataset.s; });
+    (function paso(t) {
+      let vivos = false;
+      els.forEach(el => {
+        const x = Math.min(1, Math.max(0, (t - t0 - el._ret) / dur));
+        const e = 1 - Math.pow(1 - x, 3);
+        el.textContent = x >= 1 ? el._fin : D.fmt(+el.dataset.v * e, +el.dataset.d) + el.dataset.s;
+        if (x < 1) vivos = true;
+      });
+      if (vivos) requestAnimationFrame(paso);
+    })(t0);
+  }
+
   /* ---------- piezas visuales ---------- */
   function estadoHTML(est, pct) {
     return '<span class="estado ' + est.clave + '"><i aria-hidden="true">' + est.icono + '</i>' +
@@ -23,27 +49,23 @@
     const marca = r.esperado == null || r.esPorcentaje ? '' :
       '<span class="marca" style="left:calc(' + (r.esperado * 100) + '% - 1.5px)" title="Programado a la fecha: ' + D.fmt(r.progFecha) + '"></span>';
     return '<div class="barra" role="img" aria-label="Avance ' + D.fmtPct(r.avance) + ' de la meta anual">' +
-      '<span class="relleno ' + r.estado.clave + '" style="width:' + w + '%"></span>' + marca + '</div>';
+      '<span class="relleno ' + r.estado.clave + '" style="--w:' + w + '%"></span>' + marca + '</div>';
   }
-  function mensualSVG(r, alto) {
-    const W = 240, H = alto || 60, base = H - 12;
+  /* Gráfico mensual en HTML (columnas flexibles): las barras se escalan, el texto nunca se deforma. */
+  function mensualSVG(r, grande) {
     const corte = datos.corte || 12;
-    let max = r.esPorcentaje ? 100 : Math.max(1, ...r.prog, ...r.ejec.map(v => v || 0));
-    const esc_ = v => (v == null ? 0 : Math.max(0, v)) / max * (base - 4);
-    let s = '<svg class="mensual" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Programado y ejecutado por mes">';
+    const u = r.esPorcentaje ? '%' : '';
+    const max = r.esPorcentaje ? 100 : Math.max(1, ...r.prog, ...r.ejec.map(v => v || 0));
+    const alto = v => v == null || v <= 0 ? 0 : Math.max(3, Math.min(100, v / max * 100));
+    let s = '<div class="mensual' + (grande ? ' grande' : '') + '" role="img" aria-label="Programado y ejecutado por mes">';
     for (let m = 0; m < 12; m++) {
-      const x = m * 20;
       const p = r.prog[m], e = r.ejec[m];
-      const hp = esc_(p), he = esc_(e);
-      if (!r.esPorcentaje && hp > 0) s += '<rect class="p" x="' + (x + 3) + '" y="' + (base - hp) + '" width="7" height="' + hp + '" rx="1.5"/>';
-      if (r.esPorcentaje && p) s += '<rect class="p" x="' + (x + 3) + '" y="' + (base - hp) + '" width="7" height="' + hp + '" rx="1.5"/>';
-      if (e != null && he > 0) s += '<rect class="e" x="' + (x + 10) + '" y="' + (base - he) + '" width="7" height="' + he + '" rx="1.5"/>';
-      s += '<text x="' + (x + 10) + '" y="' + (H - 1) + '" text-anchor="middle"' + (m + 1 > corte ? ' opacity=".45"' : '') + '>' + D.MESES_CORTOS[m].charAt(0) + '</text>';
-      s += '<rect class="hit" x="' + x + '" y="0" width="20" height="' + base + '"><title>' + D.MESES[m] +
-        ' · Programado ' + D.fmt(p) + (r.esPorcentaje ? '%' : '') + ' · Ejecutado ' + (e == null ? 'sin dato' : D.fmt(e) + (r.esPorcentaje ? '%' : '')) + '</title></rect>';
+      s += '<div class="mes' + (m + 1 > corte ? ' futuro' : '') + '" style="--i:' + m + '" title="' + D.MESES[m] + ' · Programado ' + D.fmt(p) + u +
+        ' · Ejecutado ' + (e == null ? 'sin dato' : D.fmt(e) + u) + '">' +
+        '<div class="col"><span class="p" style="height:' + alto(p) + '%"></span><span class="e" style="height:' + alto(e) + '%"></span></div>' +
+        '<span class="m">' + D.MESES_CORTOS[m] + '</span></div>';
     }
-    s += '<line class="base" x1="0" x2="' + W + '" y1="' + base + '" y2="' + base + '"/></svg>';
-    return s;
+    return s + '</div>';
   }
   function nombreCorto(ind) { return ind.corto || ind.nombre; }
   function codCorto(ind) { return 'AOI ' + ind.codigo.slice(-3); }
@@ -53,16 +75,16 @@
     const ind = r.ind;
     const unidad = (ind.unidad || '').toLowerCase();
     const otros = (ind.equipos || []).filter(e => e !== equipoActual);
-    const ejecTxt = r.esPorcentaje ? D.fmt(r.ejecutado) + '<small>%</small>' : D.fmt(r.ejecutado, 0);
+    const ejecTxt = r.esPorcentaje ? cnt(r.ejecutado, 1) + '<small>%</small>' : cnt(r.ejecutado, 0);
     const metaTxt = r.esPorcentaje ? 'meta ' + D.fmt(r.metaAnual) + '% · promedio mensual' : 'de ' + D.fmt(r.metaAnual, 0) + ' (meta anual)';
-    let chips = '<span class="chip">' + esc(unidad) + '</span>';
+    let chips = '<span class="chip unidad">' + esc(unidad) + '</span>';
     if (otros.length) chips += '<span class="chip">Compartida con ' + esc(otros.map(equipoNombre).join(', ')) + '</span>';
-    if (r.sinReporte.length) chips += '<span class="chip aviso">Sin reporte: ' + r.sinReporte.map(m => D.MESES_CORTOS[m - 1]).join(', ') + '</span>';
+    const aviso = r.sinReporte.length ? '<span class="chip aviso">Sin reporte: ' + r.sinReporte.map(m => D.MESES_CORTOS[m - 1]).join(', ') + '</span>' : '';
     return '<article class="tarjeta ind" data-cod="' + esc(ind.codigo) + '" tabindex="0">' +
-      '<div class="arriba"><span class="codigo">' + codCorto(ind) + ' · Meta ' + Number(ind.meta) + '</span>' + estadoHTML(r.estado) + '</div>' +
+      '<div class="arriba"><span class="codigo">' + codCorto(ind) + ' · Meta ' + Number(ind.meta) + '</span><span class="der">' + aviso + estadoHTML(r.estado) + '</span></div>' +
       '<h3>' + esc(nombreCorto(ind)) + '</h3>' +
       '<div class="cifras"><div class="ejecutado num">' + ejecTxt + '</div>' +
-      '<div class="pct"><b class="num">' + D.fmtPct(r.avance) + '</b><span class="barra-pie">' + metaTxt + '</span></div></div>' +
+      '<div class="pct"><b class="num">' + cntPct(r.avance) + '</b><span class="barra-pie">' + metaTxt + '</span></div></div>' +
       barraHTML(r) +
       (r.esPorcentaje ? '' : '<div class="barra-pie"><span>Programado a la fecha: <b class="num">' + D.fmt(r.progFecha, 0) + '</b></span><span>Faltan <b class="num">' + D.fmt(Math.max(0, r.metaAnual - r.ejecutado), 0) + '</b></span></div>') +
       mensualSVG(r) +
@@ -78,19 +100,19 @@
       '<span class="sub">' + (datos.indicadores || []).length + ' actividades operativas · avance contra la meta anual</span></div>';
     h += '<div class="resumen"><section class="tarjeta hero">' +
       '<span class="etq">Avance promedio de la DSI</span>' +
-      '<span class="grande num">' + D.fmtPct(g.avance) + '</span>' + estadoHTML(g.estado) +
+      '<span class="grande num">' + cntPct(g.avance) + '</span>' + estadoHTML(g.estado) +
       '<span class="nota">Promedio del avance de cada actividad (cada una con tope de 100%).</span>' +
       '<div class="conteo-estados">' +
-      '<div class="estado-c" style="background:var(--ok-fondo);color:var(--ok-tinta)"><b class="num">' + est.verde + '</b><span>✓ Meta cumplida</span></div>' +
-      '<div style="background:var(--alerta-fondo);color:var(--alerta-tinta)"><b class="num">' + est.ambar + '</b><span>! Cerca (80–99%)</span></div>' +
-      '<div style="background:var(--mal-fondo);color:var(--mal-tinta)"><b class="num">' + est.rojo + '</b><span>✕ Por debajo</span></div>' +
+      '<div class="estado-c" style="background:var(--ok-fondo);color:var(--ok-tinta)"><b class="num">' + cnt(est.verde) + '</b><span>✓ Meta cumplida</span></div>' +
+      '<div style="background:var(--alerta-fondo);color:var(--alerta-tinta)"><b class="num">' + cnt(est.ambar) + '</b><span>! Cerca (80–99%)</span></div>' +
+      '<div style="background:var(--mal-fondo);color:var(--mal-tinta)"><b class="num">' + cnt(est.rojo) + '</b><span>✕ Por debajo</span></div>' +
       '</div></section>';
     h += '<section class="equipos-grid">';
     g.equipos.forEach(e => {
       const n = e.resumenes.length;
       h += '<article class="tarjeta eq-tile" data-ir="eq:' + esc(e.equipo.id) + '" tabindex="0">' +
         '<h3>' + esc(e.equipo.nombre) + '</h3>' +
-        '<span class="pct num">' + (n ? D.fmtPct(e.avance) : '—') + '</span>' +
+        '<span class="pct num">' + (n ? cntPct(e.avance) : '—') + '</span>' +
         (n ? estadoHTML(e.estado) : '<span class="det">Sin actividades asignadas</span>') +
         '<span class="det">' + n + ' actividad' + (n === 1 ? '' : 'es') + '</span>' +
         '<div class="puntos">' + e.resumenes.map(r => '<span class="punto ' + r.estado.clave + '" title="' + esc(codCorto(r.ind) + ' · ' + nombreCorto(r.ind) + ' · ' + D.fmtPct(r.avance)) + '">' + r.estado.icono + '</span>').join('') + '</div>' +
@@ -126,8 +148,8 @@
       const v = f.valor || 0;
       h += '<div class="resp-fila"><span class="n" title="' + esc(f.persona.nombre) + '">' + esc(f.persona.nombre) +
         (f.persona.enCatalogo ? '' : ' <small>(sin catálogo)</small>') + '</span>' +
-        '<span class="hbar"><span style="width:' + (v / max * 100) + '%"></span></span>' +
-        '<span class="v num">' + (esPct ? D.fmt(v) + '% <small>(' + f.registros + ')</small>' : D.fmt(v, 0)) + '</span></div>';
+        '<span class="hbar"><span style="--w:' + (v / max * 100) + '%"></span></span>' +
+        '<span class="v num">' + (esPct ? cnt(v, 1, '%') + ' <small>(' + f.registros + ')</small>' : cnt(v, 0)) + '</span></div>';
     });
     if (filas.length > 10) h += '<div class="sub">… y ' + (filas.length - 10) + ' más</div>';
     return h + '</section>';
@@ -167,7 +189,10 @@
   function mostrar(i) {
     actual = (i + pantallas.length) % pantallas.length;
     const p = pantallas[actual];
-    $('#main').innerHTML = p.html();
+    const main = $('#main');
+    main.innerHTML = p.html();
+    main.querySelectorAll('.tarjeta').forEach((t, k) => t.style.setProperty('--d', (k * 70) + 'ms'));
+    animarCifras(main);
     $('#tabs').innerHTML = pantallas.map((x, k) => '<button class="tab" role="tab" aria-selected="' + (k === actual) + '" data-k="' + k + '">' + esc(x.nombre) + '</button>').join('');
     $('#pags').innerHTML = modoTV ? pantallas.map((x, k) => '<span class="' + (k === actual ? 'act' : '') + '"></span>').join('') : '';
     try { if (!modoTV) history.replaceState(null, '', '#' + p.id); } catch (e) {}
@@ -189,7 +214,7 @@
       '<div style="display:flex;gap:1.5em;align-items:center;flex-wrap:wrap;margin-bottom:1em">' +
       '<div class="ejecutado num" style="font-size:2.6em;font-weight:700">' + (r.esPorcentaje ? D.fmt(r.ejecutado) + '%' : D.fmt(r.ejecutado, 0)) + '</div>' +
       '<div>' + (r.esPorcentaje ? 'promedio · meta ' + D.fmt(r.metaAnual) + '%' : 'ejecutado de ' + D.fmt(r.metaAnual, 0) + ' (meta anual)') + '<br>' + estadoHTML(r.estado, D.fmtPct(r.avance)) + '</div></div>' +
-      barraHTML(r) + '<div style="margin:1em 0">' + mensualSVG(r, 70) + '</div>' +
+      barraHTML(r) + '<div style="margin:1em 0">' + mensualSVG(r, true) + '</div>' +
       '<div class="leyenda" style="margin-bottom:1em"><span><span class="sw e"></span>Ejecutado</span><span><span class="sw p"></span>Programado</span></div>';
     h += '<div class="tabla-scroll"><table class="tabla"><thead><tr><th>Mes</th><th>Programado</th><th>Ejecutado</th>' + (calc ? '<th>Según matrices</th>' : '') + '</tr></thead><tbody>';
     for (let m = 0; m < 12; m++) {

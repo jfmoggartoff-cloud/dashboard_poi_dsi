@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Seguimiento POI · DSI</title>
+<link rel="stylesheet" href="css/dsi.css">
+<script>
+  // tema: ?tema=oscuro|claro, si no, el del sistema
+  (function () {
+    var q = new URLSearchParams(location.search).get('tema');
+    var t = q || (matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro');
+    document.documentElement.setAttribute('data-tema', t);
+  })();
+</script>
+</head>
+<body>
+<header class="cab">
+  <img class="logo logo-claro" src="img/logo-proinversion.svg" alt="PROINVERSIÓN">
+  <img class="logo logo-oscuro" src="img/logo-proinversion-blanco.svg" alt="PROINVERSIÓN">
+  <div class="titulo">
+    <h1>Dirección de Servicios al Inversionista</h1>
+    <p id="subtitulo">Seguimiento del Plan Operativo Institucional</p>
+  </div>
+  <div class="corte" id="corte"></div>
+</header>
+
+<nav class="nav" id="nav" aria-label="Pantallas">
+  <div id="tabs" style="display:contents"></div>
+  <div class="der">
+    <a class="btn" href="./" title="Volver a la portada">⌂ Portada</a>
+    <select id="selAnio" class="btn" aria-label="Año del POI"></select>
+    <button class="btn" id="btnTema" title="Cambiar tema claro / oscuro">◐ Tema</button>
+    <button class="btn prim" id="btnTV" title="Pantalla completa con rotación automática">▶ Modo TV</button>
+  </div>
+</nav>
+
+<main id="main"><div class="vacio">Cargando datos…</div></main>
+
+<footer class="pie" id="pie">
+  <span class="leyenda">
+    <span><span class="sw e"></span>Ejecutado</span>
+    <span><span class="sw p"></span>Programado</span>
+    <span><span class="sw m"></span>Programado a la fecha</span>
+  </span>
+  <span>Semáforo contra la meta anual: <b>✓ ≥ 100%</b> · <b>! 80–99%</b> · <b>✕ &lt; 80%</b></span>
+  <span class="pags" id="pags"></span>
+</footer>
+<div class="progreso-rot" id="progresoRot"></div>
+
+<dialog class="detalle" id="detalle"><div class="cuerpo" id="detalleCuerpo"></div></dialog>
+
+<script src="js/nucleo.js"></script>
+<script src="js/monitor.js"></script>
+</body>
+</html>

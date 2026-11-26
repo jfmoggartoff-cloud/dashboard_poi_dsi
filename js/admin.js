@@ -364,7 +364,7 @@
     return '<h2>Ajustes</h2><div class="grid2">' +
       '<section class="tarjeta"><h3>Monitor</h3><div class="fila"><label>Segundos por pantalla (TV) <input id="cSeg" type="number" min="5" value="' + ((config.monitor || {}).segundosPorPantalla || 20) + '"></label>' +
       '<label>Recargar datos cada (min) <input id="cRec" type="number" min="1" value="' + ((config.monitor || {}).minutosRecarga || 5) + '"></label></div>' +
-      '<p class="ayuda" style="margin-top:8px">Enlaces para los televisores: <code>index.html?modo=tv</code> (tema claro) o <code>index.html?modo=tv&amp;tema=oscuro</code>.</p>' +
+      '<p class="ayuda" style="margin-top:8px">Enlaces para los televisores: <code>monitor.html?modo=tv</code> (tema claro) o <code>monitor.html?modo=tv&amp;tema=oscuro</code>.</p>' +
       '<button class="btn" data-acc="guardarMonitor">Aplicar</button></section>' +
       '<section class="tarjeta"><h3>Acceso de administración</h3><p class="ayuda">Usuario y contraseña generales. Se guardan cifrados (hash) en <code>datos/config.json</code>. Como el sitio es estático, esto solo evita ediciones casuales: no proteja aquí información reservada.</p>' +
       '<div class="fila"><label>Usuario <input id="cUsr" value="' + esc((config.admin || {}).usuario || 'admin') + '"></label><label>Nueva contraseña <input id="cClave" type="password" autocomplete="new-password"></label></div>' +

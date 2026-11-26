@@ -2,7 +2,8 @@
 
 Dashboard de seguimiento del Plan Operativo Institucional de la DSI.
 
-- **Monitor (solo lectura):** `index.html` · para televisores: `index.html?modo=tv` (tema oscuro: `?modo=tv&tema=oscuro`).
+- **Portada:** `index.html` (accesos al dashboard, al modo TV y a la administración).
+- **Monitor (solo lectura):** `monitor.html` · para televisores: `monitor.html?modo=tv` (tema oscuro: `monitor.html?modo=tv&tema=oscuro`).
 - **Administración:** `admin.html` (acceso restringido a la cuenta administradora).
 
 Los datos están en `datos/` (`config.json` y `poi-AAAA.json`) y se actualizan desde el panel de administración.
