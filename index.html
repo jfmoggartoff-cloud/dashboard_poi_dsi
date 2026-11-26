@@ -17,9 +17,9 @@
 </script>
 <style>
   body.portada { min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-  .portada .escena { position: relative; flex: 1; display: grid; align-content: center; gap: clamp(20px, 3vw, 56px); padding: clamp(24px, 4vw, 80px) clamp(16px, 6vw, 120px); overflow: hidden; }
+  .portada .escena { position: relative; flex: 1; display: grid; align-content: safe center; gap: clamp(20px, min(3vw, 4vh), 56px); padding: clamp(24px, min(4vw, 6vh), 80px) clamp(16px, 6vw, 120px); }
   .portada .intro { position: relative; z-index: 1; max-width: 62ch; animation: aparecer .7s cubic-bezier(.2,.8,.2,1) both; }
-  .portada .logo-grande { height: clamp(44px, 4.6vw, 96px); display: block; margin-bottom: clamp(18px, 2vw, 40px); }
+  .portada .logo-grande { height: clamp(44px, min(4.6vw, 8vh), 96px); display: block; margin-bottom: clamp(18px, min(2vw, 3vh), 40px); }
   .portada .logo-grande.osc { display: none; }
   :root[data-tema="oscuro"] .portada .logo-grande.cla { display: none; }
   :root[data-tema="oscuro"] .portada .logo-grande.osc { display: block; }
@@ -27,13 +27,13 @@
   .portada .acento { display: inline-block; height: .95em; aspect-ratio: 132.66 / 97.04; background: var(--rojo); clip-path: polygon(50.05% 0, 100% 0, 49.95% 100%, 0 100%); vertical-align: -.12em; margin-right: .55em; }
   .portada .eyebrow { color: var(--rojo-texto); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: clamp(12px, .9vw, 18px); }
   :root[data-tema="oscuro"] .portada .eyebrow { color: #FF6B63; }
-  .portada h1 { margin: .2em 0 .25em; font-size: clamp(32px, 4.2vw, 88px); line-height: 1.02; letter-spacing: -.025em; }
+  .portada h1 { margin: .2em 0 .25em; font-size: clamp(32px, min(4.2vw, 6.5vh), 88px); line-height: 1.02; letter-spacing: -.025em; }
   .portada .lead { color: var(--tinta-2); font-size: clamp(15px, 1.25vw, 26px); margin: 0; }
   .portada .dato { display: inline-flex; gap: .6em; align-items: baseline; margin-top: clamp(14px, 1.6vw, 30px); padding: .5em .9em; border-radius: 12px; background: var(--superficie); border: 1px solid var(--linea); font-size: clamp(13px, 1vw, 20px); color: var(--tinta-2); }
   .portada .dato b { font-size: 1.6em; color: var(--tinta); }
   .portada .opciones { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(14px, 1.6vw, 32px); max-width: 1400px; }
   .portada .opcion { animation: aparecer .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d, 0ms); }
-  .portada .opcion { position: relative; display: flex; flex-direction: column; gap: .5em; text-decoration: none; color: inherit; padding: clamp(18px, 1.8vw, 36px); overflow: hidden; transition: transform .25s, box-shadow .25s, border-color .25s; }
+  .portada .opcion { position: relative; display: flex; flex-direction: column; gap: .5em; text-decoration: none; color: inherit; padding: clamp(18px, min(1.8vw, 3vh), 36px); overflow: hidden; transition: transform .25s, box-shadow .25s, border-color .25s; }
   .portada .opcion:hover, .portada .opcion:focus-visible { transform: translateY(-4px); border-color: var(--linea-2); box-shadow: 0 10px 30px rgba(22,26,29,.12); outline: none; }
   .portada .opcion::after { content: ""; position: absolute; top: -20%; bottom: -20%; left: 0; width: 25%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent); transform: translateX(-140%) skewX(-34.25deg); transition: transform .8s; pointer-events: none; }
   :root[data-tema="oscuro"] .portada .opcion::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
@@ -53,6 +53,17 @@
   .portada .extra a { font-size: clamp(12px, .85vw, 17px); color: var(--tinta-2); border: 1px solid var(--linea-2); border-radius: 999px; padding: .15em .7em; text-decoration: none; position: relative; z-index: 2; }
   .portada .extra a:hover { color: var(--tinta); border-color: var(--tinta-3); }
   .portada footer { padding: 14px clamp(16px, 6vw, 120px); color: var(--tinta-3); font-size: 13px; border-top: 1px solid var(--linea); background: var(--superficie); display: flex; justify-content: space-between; gap: 1em; flex-wrap: wrap; }
+  /* Pantallas bajas (laptops, navegador con barras): todo entra sin desplazarse */
+  @media (max-height: 960px) and (min-width: 701px) {
+    .portada .escena { padding-block: 22px; gap: 18px; }
+    .portada .logo-grande { height: 42px; margin-bottom: 12px; }
+    .portada h1 { font-size: clamp(28px, 3.1vw, 54px); margin: .15em 0 .2em; }
+    .portada .lead { font-size: 15px; }
+    .portada .dato { margin-top: 10px; }
+    .portada .opcion { padding: 16px 18px; }
+    .portada .icono { width: 40px; height: 40px; margin-bottom: .2em; }
+    .portada .opcion .ir { padding-top: .5em; }
+  }
 </style>
 </head>
 <body class="portada">
